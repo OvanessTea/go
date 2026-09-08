@@ -14,6 +14,10 @@ type CreateUserResponse struct {
 	Name    string `json:name`
 }
 
+type UserResponse struct {
+	Name string `json:name`
+}
+
 type ErrorResponse struct {
 	Error string `json:error`
 }

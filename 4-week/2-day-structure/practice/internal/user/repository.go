@@ -2,6 +2,7 @@ package user
 
 type Repository interface {
 	Save(name string) error
+	FindAll() []string
 }
 
 type InMemoryRepository struct {
@@ -21,4 +22,14 @@ func (r *InMemoryRepository) Save(name string) error {
 
 	r.users[name] = true
 	return nil
+}
+
+func (r *InMemoryRepository) FindAll() []string {
+	users := make([]string, 0, len(r.users))
+
+	for name := range r.users {
+		users = append(users, name)
+	}
+
+	return users
 }

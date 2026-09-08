@@ -28,3 +28,7 @@ func (s Service) CreateUser(name string) error {
 
 	return nil
 }
+
+func (s Service) GetUsers() []string {
+	return s.repo.FindAll()
+}

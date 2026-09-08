@@ -17,14 +17,27 @@ func NewUserHandler(service user.Service) UserHandler {
 	}
 }
 
-func (h UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		w.Header().Set("Allow", http.MethodPost)
+func (h UserHandler) Handle(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		h.GetUsers(w, r)
+		return
+
+	case http.MethodPost:
+		h.CreateUser(w, r)
+		return
+
+	default:
+		w.Header().Set("Allow", http.MethodGet+", "+http.MethodPost)
+
 		writeJSON(w, http.StatusMethodNotAllowed, ErrorResponse{
 			Error: "method not allowed",
 		})
-		return
 	}
+}
+
+func (h UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
+
 	var req CreateUserRequest
 
 	err := json.NewDecoder(r.Body).Decode(&req)
@@ -62,4 +75,14 @@ func (h UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		Message: "user created",
 		Name:    req.Name,
 	})
+}
+
+func (h UserHandler) GetUsers(w http.ResponseWriter, r *http.Request) {
+	users := h.service.GetUsers()
+	res := make([]UserResponse, 0, len(users))
+	for _, name := range users {
+		res = append(res, UserResponse{Name: name})
+	}
+
+	writeJSON(w, http.StatusOK, res)
 }
