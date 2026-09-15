@@ -1,6 +1,12 @@
 package main
 
+import (
+	"errors"
+	"fmt"
+)
+
 func main() {
+	divide(10, 2)
 }
 
 // Practice 1
@@ -58,3 +64,16 @@ func main() {
 //     return x
 // }
 // Будет 10. Потому что мы возвращаем переменную до вызова defer функции
+
+// Practice 5
+func divide(a, b int) (result int, err error) {
+	if b == 0 {
+		result = 0
+		err = errors.New("division by zero")
+	} else {
+		result = a / b
+		err = nil
+	}
+	defer fmt.Println("result:", result)
+	return
+}
